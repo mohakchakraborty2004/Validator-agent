@@ -4,7 +4,7 @@ from validator import validate_Solution, validate_Ques
 from typing import List
 import uvicorn
 import os
-from services.health_service import HealthService
+# from services.health_service import HealthService
 import requests
 import asyncio
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,40 +22,38 @@ app.add_middleware(
 
 usersDB = {}
 
-health_service = HealthService()
+# health_service = HealthService()
 
-@app.on_event("startup")
-async def startup_event():
-    await asyncio.sleep(5)
-    asyncio.create_task(health_service.keep_alive())
-
-
-class USER(BaseModel):
-    name : str
-    age : int
-
-class TWEET(BaseModel):
-    tasks : List[str]
-
-@app.get("/api/health")
-async def health_check():
-    """
-    Health check endpoint that returns the application status
-    """
-    return await health_service.health_check()
+# @app.on_event("startup")
+# async def startup_event():
+#     await asyncio.sleep(5)
+#     asyncio.create_task(health_service.keep_alive())
 
 
-@app.post("/register")
-def reg_user(user: USER):
-    usersDB[user.name] = user.age
-    return {"message": "hello", "data": user.dict()}
+class ProblemValidationRequest(BaseModel):
+    ques: str
 
-@app.post("/gen-tweet")
-def get_tweet(data: TWEET): 
-    return {"tweet" : gen_tweet(data)}
+class SolutionValidationRequest(BaseModel):
+    ques: str
+    solution_code: str
+    language: str 
+
+# @app.get("/api/health")
+# async def health_check():
+#     """
+#     Health check endpoint that returns the application status
+#     """
+#     return await health_service.health_check()
+
+
+@app.post("/validateQuest")
+def validate(validator: ProblemValidationRequest):
+    return validate_Ques(validator)
+
+@app.post("/checkSolution")
+def solnCheck(data: SolutionValidationRequest): 
+    return validate_Solution(data)
     
 
 if __name__ == "__main__":
-    # Get port from environment variable or use a default
-    port = int(os.environ.get("PORT", 10000))
-    uvicorn.run(app, host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
