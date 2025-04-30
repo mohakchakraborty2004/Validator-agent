@@ -36,7 +36,7 @@ class ProblemValidationRequest(BaseModel):
 class SolutionValidationRequest(BaseModel):
     ques: str
     solution_code: str
-    language: str 
+     
 
 # @app.get("/api/health")
 # async def health_check():
@@ -52,7 +52,9 @@ def validate(validator: ProblemValidationRequest):
 
 @app.post("/checkSolution")
 def solnCheck(data: SolutionValidationRequest): 
-    return validate_Solution(data)
+    solution_code = data.solution_code
+    ques = data.ques
+    return validate_Solution(ques ,solution_code)
     
 
 if __name__ == "__main__":

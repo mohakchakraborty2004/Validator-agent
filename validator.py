@@ -38,21 +38,20 @@ def validate_Ques(ques: str ):
 
 
 
-result1 = validate_Ques("Given an array of integers, find the maximum sum of a contiguous subarray.")
-print("Question Validation Result:")
-print(json.dumps(result1, indent=2))
+# result1 = validate_Ques("Given an array of integers, find the maximum sum of a contiguous subarray.")
+# print("Question Validation Result:")
+# print(json.dumps(result1, indent=2))
 
 
-def validate_Solution(ques: str, language: str, solution_code ):
+def validate_Solution(ques: str, solution_code : str ):
     prompt = f"""
         Evaluate if the following solution correctly solves the given DSA problem.
         
         Problem Statement:
         {ques}
         
-        Proposed Solution ({language}):
-        ```{language}
-        {solution_code}
+        Proposed Solution:
+        ```{solution_code}
         ```
         
         Please analyze the solution for:
@@ -79,21 +78,21 @@ def validate_Solution(ques: str, language: str, solution_code ):
     model='gemini-2.0-flash',
     contents=prompt,
     )
+    print(response.text)
     cleaned = response.text.replace("```json\n", "").replace("\n```", "")
     return json.loads(cleaned)
 
 
-result2 = validate_Solution(
-    "Given an array of integers, find the maximum sum of a contiguous subarray.",
-    "python",
-    """def max_subarray(nums):
-    if not nums:
-        return 0
-    max_sum = current_sum = nums[0]
-    for num in nums[1:]:
-        current_sum = max(num, current_sum + num)
-        max_sum = max(max_sum, current_sum)
-    return max_sum"""
-)
-print("\nSolution Validation Result:")
-print(json.dumps(result2, indent=2))
+# result2 = validate_Solution(
+#     "Given an array of integers, find the maximum sum of a contiguous subarray.",
+#     """def max_subarray(nums):
+#     if not nums:
+#         return 0
+#     max_sum = current_sum = nums[0]
+#     for num in nums[1:]:
+#         current_sum = max(num, current_sum + num)
+#         max_sum = max(max_sum, current_sum)
+#     return max_sum"""
+# )
+# print("\nSolution Validation Result:")
+# print(json.dumps(result2, indent=2))
